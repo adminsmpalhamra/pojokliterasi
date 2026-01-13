@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pojok Literasi SMP</title>
-
 <style>
 :root{
     --primary:#1565c0;
@@ -187,191 +186,220 @@ details summary{
     text-decoration:underline;
 }
 
+
+#pdfView {
+    display:none;
+    position:fixed;
+    top:72px; /* tinggi header + menu */
+    left:0;
+    width:100%;
+    height:calc(100% - 72px); /* sisakan header */
+    background:#fff;
+    z-index:9999;
+}
+
+
+#pdfView .viewer-header {
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    background:#eee;
+}
+
+#pdfView .viewer-body {
+    height:calc(100% - 50px); /* sisakan untuk header PDF */
+}
+
+#pdfViewer {
+    width:100%;
+    height:100%; /* full height viewer-body */
+    border:none;
+}
+
+
 </style>
 </head>
-
 <body>
 
-<!-- HEADER -->
 <header>
-    <h1>📚 POJOK LITERASI SMP</h1>
+<h1>📚 POJOK LITERASI SMP</h1>
 </header>
 
-<!-- MENU UTAMA -->
 <nav class="main-menu">
-    <button class="active" onclick="setMenu('home',this)">Beranda</button>
-    <button onclick="setMenu('guru',this)">Buku Panduan Guru</button>
-    <button onclick="setMenu('siswa',this)">Buku Siswa</button>
-    <button onclick="setMenu('tentang',this)">Tentang</button>
+<button class="active" onclick="setMenu('home',this)">Beranda</button>
+<button onclick="setMenu('guru',this)">Buku Panduan Guru</button>
+<button onclick="setMenu('siswa',this)">Buku Siswa</button>
+<button onclick="setMenu('tentang',this)">Tentang</button>
 </nav>
 
-<!-- KONTEN -->
 <div class="container">
-
-<!-- SIDEBAR -->
-<aside class="sidebar hide">
-
-<!-- BERANDA -->
-<div id="home" class="menu-section active">
-    <p>
-        Selamat datang di <b>Pojok Literasi SMP</b>.<br><br>
-        Gunakan menu di atas untuk mengakses buku digital
-        resmi dari Kemendikbud.
-    </p>
-</div>
-
-<!-- BUKU GURU -->
-<div id="guru" class="menu-section">
-    <details open>
-        <summary>Kelas VIII</summary>
-        <div class="item">
-            <span>PJOK</span>
-            <button onclick="bacaPDF(
-			'https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BG_KLS_VIII.pdf',
-			'Buku Panduan Guru PJOK Kelas VIII',
-			'Buku Panduan Guru',
-			'VIII',
-			'PJOK')">Baca</button>
-
-        </div>
-    </details>
-</div>
-
-<!-- BUKU SISWA -->
-<div id="siswa" class="menu-section">
-    <details open>
-        <summary>Kelas VII</summary>
-        <div class="item">
-            <span>Bahasa Indonesia</span>
-            <button onclick="bacaPDF('#','Buku Siswa BI Kelas VII')">Baca</button>
-        </div>
-    </details>
-</div>
-
-<!-- TENTANG -->
-<div id="tentang" class="menu-section">
-    <p>
-        <b>Pojok Literasi Digital SMP</b><br>
-        Sumber Buku: Kemendikbudristek<br>
-        Digunakan untuk pembelajaran daring & luring.
-    </p>
-</div>
-
-</aside>
-
-<!-- VIEWER -->
 <main class="viewer">
 
-    <!-- HOME VIEW -->
-    <div id="homeView" class="info">
-        <h3>📚 Selamat Datang</h3>
-        <p>
-            Ini adalah <b>Pojok Literasi Digital SMP</b>.<br>
-            Gunakan menu di atas untuk membuka buku guru atau buku siswa.
-        </p>
-    </div>
-
-    <!-- PDF VIEW -->
-    <div id="pdfView" style="display:none;height:100%;">
-
-    <!-- BREADCRUMB -->
-    <div class="breadcrumb" id="breadcrumb">
-        Beranda
-    </div>
-
-    <div class="viewer-header">
-        <span id="judulPDF">📄 Belum ada dokumen</span>
-        <div>
-            <button onclick="openTab()">↗ Tab</button>
-            <button onclick="fullscreen()">⛶</button>
-        </div>
-    </div>
-
-    <div class="viewer-body">
-        <iframe id="pdfViewer"></iframe>
-    </div>
-
+<!-- BERANDA -->
+<div id="homeView">
+<h3>📚 Selamat Datang</h3>
+<p>Gunakan menu di atas untuk mengakses buku resmi Kemendikbud.</p>
 </div>
 
+<!-- DROPDOWN PANEL -->
+<div id="dropdownPanel" style="display:none;">
+<h3 id="breadcrumb"></h3>
+<select id="kelasSelect" onchange="renderMapel()">
+<option value="">-- Pilih Kelas --</option>
+</select>
+<div id="daftarMapel"></div>
+</div>
+
+<!-- PDF VIEWER -->
+<div id="pdfView" style="display:none;">
+<div class="breadcrumb" id="breadcrumbPdf"></div>
+<div class="viewer-header">
+<span id="judulPDF">📄 Judul Buku</span>
+<div>
+<button onclick="openTab()">↗ Tab</button>
+<button onclick="fullscreen()">⛶</button>
+</div>
+</div>
+<div class="viewer-body">
+<iframe id="pdfViewer"></iframe>
+</div>
+</div>
 
 </main>
-
-
 </div>
 
 <script>
-let currentPDF="";
+// ================= DATA BUKU =================
+const dataBuku = {
+  "guru": {
+    "VII": [
+      { "mapel": "Pendidikan Agama dan Budi Pekerti", "link": "" },
+      { "mapel": "PPKn", "link": "" },
+      { "mapel": "Bahasa Indonesia", "link": "" },
+      { "mapel": "Matematika", "link": "" },
+      { "mapel": "IPA", "link": "" },
+      { "mapel": "IPS", "link": "" },
+      { "mapel": "Bahasa Inggris", "link": "" },
+      { "mapel": "Informatika", "link": "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/BG_INFORMATIKA_VII.pdf" },
+      { "mapel": "Seni Budaya", "link": "" },
+      { "mapel": "PJOK", "link": "" }
+    ],
+    "VIII": [
+      { "mapel": "PJOK", "link": "https://static.sc.cloudapp.web.id/content/pdf/bukuteks/kurikulum21/PJOK_BG_KLS_VIII.pdf" }
+    ]
+  },
+  "siswa": {
+    "VII": [
+      { "mapel": "Informatika", "link": "" }
+    ]
+  }
+};
 
-function setMenu(menu,btn){
-    // aktif menu utama
-    document.querySelectorAll('.main-menu button')
-        .forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+let currentJenis = "";
+let currentPDF = "";
 
-    // tampilkan section sidebar sesuai menu
-    document.querySelectorAll('.menu-section')
-        .forEach(s=>s.classList.remove('active'));
-    document.getElementById(menu).classList.add('active');
+// ================= MENU =================
+function setMenu(menu, btn) {
+  document.querySelectorAll(".main-menu button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
 
-    const sidebar = document.querySelector(".sidebar");
+  document.getElementById("homeView").style.display = "none";
+  document.getElementById("dropdownPanel").style.display = "none";
+  document.getElementById("pdfView").style.display = "none";
 
-    if(menu === "home" || menu === "tentang"){
-        // BERANDA / TENTANG
-        sidebar.classList.add("hide");
+  if(menu==="home"){
+    document.getElementById("homeView").style.display="block";
+    return;
+  }
+  if(menu==="tentang"){
+    document.getElementById("homeView").style.display="block";
+    document.getElementById("homeView").innerHTML=`
+      <h3>📘 Tentang</h3>
+      <p><b>Pojok Literasi Digital SMP</b><br>Sumber Buku: Kemendikbudristek</p>`;
+    return;
+  }
 
-        document.getElementById("homeView").style.display="block";
-        document.getElementById("pdfView").style.display="none";
-        document.getElementById("pdfViewer").src="";
-        document.getElementById("judulPDF").innerText="📄 Belum ada dokumen";
-        document.getElementById("breadcrumb").innerHTML="Beranda";
-        currentPDF="";
-    } else {
-        // BUKU GURU / SISWA
-        sidebar.classList.remove("hide");
+  currentJenis = menu;
+  document.getElementById("dropdownPanel").style.display = "block";
+  document.getElementById("breadcrumb").innerText = menu==="guru"?"Buku Panduan Guru":"Buku Siswa";
 
-        document.getElementById("homeView").style.display="block";
-        document.getElementById("homeView").innerHTML =
-            "<p>📘 Silakan pilih <b>kelas</b> dan <b>mata pelajaran</b> di sebelah kiri.</p>";
-        document.getElementById("pdfView").style.display="none";
-    }
+  renderDropdownKelas();
+
+  // ======= default ke kelas VII untuk guru =======
+  const select = document.getElementById("kelasSelect");
+  if(currentJenis==="guru" && dataBuku[currentJenis]["VII"]){
+      select.value = "VII";
+      renderMapel();
+  }
 }
 
-function goHome(){
-    setMenu('home', document.querySelector('.main-menu button'));
+
+// ================= DROPDOWN KELAS =================
+function renderDropdownKelas(){
+  const select = document.getElementById("kelasSelect");
+  select.innerHTML = `<option value="">-- Pilih Kelas --</option>`;
+  if(!dataBuku[currentJenis]) return;
+  Object.keys(dataBuku[currentJenis]).forEach(kelas=>{
+    select.innerHTML += `<option value="${kelas}">Kelas ${kelas}</option>`;
+  });
+  document.getElementById("daftarMapel").innerHTML="";
 }
 
-function bacaPDF(link,judul,jenis,kelas,mapel){
-    if(link==="#"){
-        alert("Link PDF belum diisi");
-        return;
-    }
+// ================= RENDER MAPEL =================
+function renderMapel(){
+  const kelas = document.getElementById("kelasSelect").value;
+  const container = document.getElementById("daftarMapel");
+  container.innerHTML="";
+  if(!kelas || !dataBuku[currentJenis] || !dataBuku[currentJenis][kelas]) return;
+  dataBuku[currentJenis][kelas].forEach(buku=>{
+    const disabled = buku.link?"":"disabled";
+    container.innerHTML += `
+      <div class="item">
+        <span>${buku.mapel}</span>
+        <button ${disabled} onclick="bacaPDF('${buku.link}','${buku.mapel}','${currentJenis==="guru"?"Buku Panduan Guru":"Buku Siswa"}','${kelas}','${buku.mapel}')">
+        ${buku.link?"Baca":"Belum tersedia"}
+        </button>
+      </div>
+    `;
+  });
+}
 
+// ================= BUKA PDF =================
+/*function bacaPDF(link, judul, jenis, kelas, mapel){
+  currentPDF = link;
+  document.getElementById("pdfViewer").src = link;
+  document.getElementById("judulPDF").innerText = "📄 "+judul;
+  document.getElementById("breadcrumbPdf").innerHTML = `<span onclick="goHome()">Beranda</span> › <span>${jenis}</span> › <span>Kelas ${kelas}</span> › <b>${mapel}</b>`;
+  document.getElementById("dropdownPanel").style.display="none";
+  document.getElementById("pdfView").style.display="block";
+}*/
+
+function bacaPDF(link, judul, jenis, kelas, mapel){
     currentPDF = link;
     document.getElementById("pdfViewer").src = link;
-    document.getElementById("judulPDF").innerText = "📄 " + judul;
-
-    // breadcrumb
-    document.getElementById("breadcrumb").innerHTML =
-        `<span onclick="goHome()">Beranda</span> › 
-         <span>${jenis}</span> › 
-         <span>Kelas ${kelas}</span> › 
-         <b>${mapel}</b>`;
-
-    document.getElementById("homeView").style.display="none";
+    document.getElementById("judulPDF").innerText = "📄 "+judul;
+    document.getElementById("breadcrumbPdf").innerHTML = `<span onclick="goHome()">Beranda</span> › <span>${jenis}</span> › <span>Kelas ${kelas}</span> › <b>${mapel}</b>`;
+    document.getElementById("dropdownPanel").style.display="none";
     document.getElementById("pdfView").style.display="block";
-
-    // auto hide sidebar saat baca
-    document.querySelector(".sidebar").classList.add("hide");
 }
 
-function openTab(){
-    if(currentPDF) window.open(currentPDF,"_blank");
-}
+// ================= UTIL =================
+function goHome(){ location.reload(); }
+function openTab(){ if(currentPDF) window.open(currentPDF,"_blank"); }
+function fullscreen(){ document.getElementById("pdfView").requestFullscreen(); }
 
+// fungsi fullscreen
 function fullscreen(){
-    document.getElementById("pdfView").requestFullscreen();
+    const pdfDiv = document.getElementById("pdfView");
+    if (pdfDiv.requestFullscreen) {
+        pdfDiv.requestFullscreen();
+    } else if (pdfDiv.webkitRequestFullscreen) { /* Safari */
+        pdfDiv.webkitRequestFullscreen();
+    } else if (pdfDiv.msRequestFullscreen) { /* IE11 */
+        pdfDiv.msRequestFullscreen();
+    }
 }
-</script>
 
+</script>
 </body>
 </html>
