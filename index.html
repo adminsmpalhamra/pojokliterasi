@@ -11,7 +11,7 @@
         }
 
         header {
-            background: #2c7be5;
+            background: #1e88e5;
             color: white;
             padding: 15px;
             text-align: center;
@@ -19,47 +19,52 @@
 
         .container {
             display: flex;
-            height: calc(100vh - 70px);
+            height: calc(100vh - 80px);
         }
 
         .sidebar {
-            width: 30%;
+            width: 32%;
             background: white;
             padding: 15px;
             overflow-y: auto;
             border-right: 1px solid #ddd;
         }
 
-        .sidebar h3 {
-            margin-top: 20px;
-            color: #2c7be5;
+        .mapel {
+            margin-bottom: 15px;
+        }
+
+        .mapel h3 {
+            margin: 10px 0 5px;
+            color: #1e88e5;
         }
 
         .book {
-            margin: 8px 0;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 5px;
         }
 
         .book button {
-            background: #2c7be5;
+            background: #1e88e5;
             color: white;
             border: none;
-            padding: 6px 10px;
-            cursor: pointer;
+            padding: 5px 10px;
             border-radius: 4px;
+            cursor: pointer;
         }
 
         .book button:hover {
-            background: #1a5fc4;
+            background: #1565c0;
         }
 
         .viewer {
-            width: 70%;
+            width: 68%;
             padding: 10px;
             background: #e9ecef;
         }
@@ -74,7 +79,8 @@
         .info {
             text-align: center;
             color: #555;
-            margin-top: 50px;
+            margin-top: 40px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -82,36 +88,100 @@
 
 <header>
     <h1>Pojok Literasi SMP</h1>
-    <p>Bahan Ajar Digital untuk Siswa</p>
+    <p>Bahan Ajar Digital | Klik “Baca” untuk membaca PDF</p>
 </header>
 
 <div class="container">
 
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR MAPEL -->
     <div class="sidebar">
 
-        <h3>📘 Bahasa Indonesia</h3>
-        <div class="book">
-            <span>Kelas VII - Teks Narasi</span>
-            <button onclick="bacaPDF('pdf/bahasa_indonesia_kelas7.pdf')">Baca</button>
+        <div class="mapel">
+            <h3>📖 Pendidikan Agama & Budi Pekerti</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/agama.pdf')">Baca</button>
+            </div>
         </div>
 
-        <h3>📗 Matematika</h3>
-        <div class="book">
-            <span>Kelas VII - Bilangan Bulat</span>
-            <button onclick="bacaPDF('pdf/matematika_kelas7.pdf')">Baca</button>
+        <div class="mapel">
+            <h3>🇮🇩 Pendidikan Pancasila</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/pancasila.pdf')">Baca</button>
+            </div>
         </div>
 
-        <h3>📕 IPA</h3>
-        <div class="book">
-            <span>Kelas VII - Sistem Organisasi Kehidupan</span>
-            <button onclick="bacaPDF('pdf/ipa_kelas7.pdf')">Baca</button>
+        <div class="mapel">
+            <h3>📝 Bahasa Indonesia</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/bahasa_indonesia.pdf')">Baca</button>
+            </div>
         </div>
 
-        <h3>📙 IPS</h3>
-        <div class="book">
-            <span>Kelas VII - Interaksi Sosial</span>
-            <button onclick="bacaPDF('pdf/ips_kelas7.pdf')">Baca</button>
+        <div class="mapel">
+            <h3>➗ Matematika</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/matematika.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🔬 Ilmu Pengetahuan Alam (IPA)</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/ipa.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🌍 Ilmu Pengetahuan Sosial (IPS)</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/ips.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🇬🇧 Bahasa Inggris</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/bahasa_inggris.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🏃 PJOK</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/pjok.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>💻 Informatika</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/informatika.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🎨 Seni Budaya</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/seni_budaya.pdf')">Baca</button>
+            </div>
+        </div>
+
+        <div class="mapel">
+            <h3>🗣️ Bahasa Daerah</h3>
+            <div class="book">
+                <span>Materi Pembelajaran</span>
+                <button onclick="bacaPDF('pdf/bahasa_daerah.pdf')">Baca</button>
+            </div>
         </div>
 
     </div>
@@ -120,7 +190,8 @@
     <div class="viewer">
         <iframe id="pdfViewer"></iframe>
         <div id="info" class="info">
-            Silakan pilih bahan ajar dan klik <b>Baca</b> untuk membaca PDF.
+            📚 Silakan pilih mata pelajaran di sebelah kiri  
+            <br>dan klik <b>Baca</b> untuk membaca buku digital.
         </div>
     </div>
 
