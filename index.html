@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pojok Literasi SMP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        header {
+            background: #2c7be5;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 30%;
+            background: white;
+            padding: 15px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar h3 {
+            margin-top: 20px;
+            color: #2c7be5;
+        }
+
+        .book {
+            margin: 8px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book button {
+            background: #2c7be5;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .book button:hover {
+            background: #1a5fc4;
+        }
+
+        .viewer {
+            width: 70%;
+            padding: 10px;
+            background: #e9ecef;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        .info {
+            text-align: center;
+            color: #555;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Pojok Literasi SMP</h1>
+    <p>Bahan Ajar Digital untuk Siswa</p>
+</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <h3>📘 Bahasa Indonesia</h3>
+        <div class="book">
+            <span>Kelas VII - Teks Narasi</span>
+            <button onclick="bacaPDF('pdf/bahasa_indonesia_kelas7.pdf')">Baca</button>
+        </div>
+
+        <h3>📗 Matematika</h3>
+        <div class="book">
+            <span>Kelas VII - Bilangan Bulat</span>
+            <button onclick="bacaPDF('pdf/matematika_kelas7.pdf')">Baca</button>
+        </div>
+
+        <h3>📕 IPA</h3>
+        <div class="book">
+            <span>Kelas VII - Sistem Organisasi Kehidupan</span>
+            <button onclick="bacaPDF('pdf/ipa_kelas7.pdf')">Baca</button>
+        </div>
+
+        <h3>📙 IPS</h3>
+        <div class="book">
+            <span>Kelas VII - Interaksi Sosial</span>
+            <button onclick="bacaPDF('pdf/ips_kelas7.pdf')">Baca</button>
+        </div>
+
+    </div>
+
+    <!-- PDF VIEWER -->
+    <div class="viewer">
+        <iframe id="pdfViewer"></iframe>
+        <div id="info" class="info">
+            Silakan pilih bahan ajar dan klik <b>Baca</b> untuk membaca PDF.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function bacaPDF(file) {
+        document.getElementById("pdfViewer").src = file;
+        document.getElementById("info").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
