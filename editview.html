@@ -3,62 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <title>Edit & View Telegram Post</title>
+
 <style>
-  body {
-    font-family: system-ui, sans-serif;
-    padding: 20px;
-    background: #fafafa;
-  }
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 1em;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    border-radius: 6px;
-    border: none;
-    background: #4CAF50;
-    color: white;
-  }
-  #log {
-    margin-top: 20px;
-    white-space: pre-wrap;
-    background: #f1f1f1;
-    padding: 10px;
-    border-radius: 6px;
-    max-height: 200px;
-    overflow: auto;
-  }
-  #widget-container {
-    margin-top: 20px;
-  }
+:root {
+  --primary: #4CAF50;
+  --primary-dark: #43a047;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #333;
+  --border: #e0e0e0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 30px;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  resize: vertical;
+}
+
+textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.actions {
+  margin-top: 15px;
+}
+
+button {
+  padding: 12px 22px;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.preview-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+#telegram-widget {
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  background: #fafafa;
+}
 </style>
 </head>
+
 <body>
 
-<h2>Edit & View Telegram Post</h2>
+<div class="container">
+  <h2>✏️ Edit & Preview Telegram Post</h2>
 
-<!-- Textarea untuk edit pesan -->
-<textarea id="text" rows="4" placeholder="Isi pesan baru channel"></textarea>
-<button onclick="edit()">Edit Pesan</button>
+  <div class="card">
+    <label for="text">Isi pesan baru</label>
+    <textarea id="text" placeholder="Tulis pesan channel di sini..."></textarea>
 
-<pre id="log"></pre>
+    <div class="actions">
+      <button onclick="edit()">💾 Edit Pesan</button>
+    </div>
+  </div>
 
-<!-- Container widget -->
-<div id="widget-container">
-  <h3>Preview Pesan (ID 27)</h3>
-  <div id="telegram-widget">
-    <!-- Widget Telegram akan muncul di sini -->
+  <div class="card">
+    <div class="preview-title">👀 Preview Pesan (ID 27)</div>
+    <div id="telegram-widget"></div>
   </div>
 </div>
 
@@ -67,10 +125,9 @@ const TOKEN = "8384730708:AAHjPCLYpW7wz2B5-jBxMJ17-kH1G1zXZuY";
 const CHAT_ID = -1001538855794;
 const MESSAGE_ID = 27;
 
-// Fungsi untuk inject widget Telegram
 function loadWidget() {
   const container = document.getElementById("telegram-widget");
-  container.innerHTML = ""; // kosongkan dulu
+  container.innerHTML = "";
   const script = document.createElement("script");
   script.async = true;
   script.src = "https://telegram.org/js/telegram-widget.js?22";
@@ -79,13 +136,11 @@ function loadWidget() {
   container.appendChild(script);
 }
 
-// Panggil widget pertama kali (tampilkan sebelum edit)
 loadWidget();
 
-// Fungsi edit pesan
 async function edit() {
-  const text = document.getElementById("text").value;
-  if (!text) return alert("Text kosong");
+  const text = document.getElementById("text").value.trim();
+  if (!text) return alert("❌ Pesan tidak boleh kosong");
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
@@ -100,15 +155,17 @@ async function edit() {
     });
 
     const json = await res.json();
-    document.getElementById("log").textContent = JSON.stringify(json, null, 2);
 
-    if (json.ok) {
-      // reload widget supaya tampil update terbaru
-      setTimeout(loadWidget, 1000); // delay 1 detik biar server Telegram update dulu
+    if (!json.ok) {
+      alert("❌ Gagal edit pesan");
+      return;
     }
 
+    // reload widget biar update
+    setTimeout(loadWidget, 1000);
+
   } catch (e) {
-    document.getElementById("log").textContent = "❌ Error: " + e.message;
+    alert("❌ Error: " + e.message);
   }
 }
 </script>
