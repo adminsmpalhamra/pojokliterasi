@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edit Telegram Channel</title>
+</head>
+<body>
+
+<textarea id="text" rows="6" style="width:100%"
+placeholder="Isi pesan baru channel"></textarea>
+
+<button onclick="edit()">Edit Pesan Channel</button>
+
+<pre id="log"></pre>
+
+<script>
+const TOKEN = "8384730708:AAHjPCLYpW7wz2B5-jBxMJ17-kH1G1zXZuY"; // ⚠️ BAHAYA
+const CHAT_ID = -1003689025820;     // ID channel
+const MESSAGE_ID = 15;              // ID pesan ASLI di channel
+
+async function edit(){
+  const text = document.getElementById("text").value;
+  if(!text) return alert("Text kosong");
+
+  const res = await fetch(
+    `https://api.telegram.org/bot${TOKEN}/editMessageText`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        message_id: MESSAGE_ID,
+        text: text,
+        disable_web_page_preview: true
+      })
+    }
+  );
+
+  const json = await res.json();
+  document.getElementById("log").textContent =
+    JSON.stringify(json, null, 2);
+}
+</script>
+
+</body>
+</html>
