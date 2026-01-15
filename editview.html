@@ -6,11 +6,15 @@
 <title>Edit Telegram Post</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: system-ui, sans-serif;
   background: #f5f5f5;
   margin: 0;
-  padding: 16px;
+  padding: 12px;
 }
 
 .container {
@@ -20,45 +24,71 @@ body {
 
 h2 {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
 }
 
 .card {
   background: #fff;
-  padding: 14px;
+  padding: 12px;
   border-radius: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   border: 1px solid #ddd;
 }
 
 textarea {
   width: 100%;
-  min-height: 120px;
+  min-height: 80px;
+  max-height: 40vh;
   padding: 10px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  resize: none;
+  overflow-y: auto;
 }
 
-button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 12px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  background: #4CAF50;
-  color: #fff;
+.preview-wrapper {
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 #telegram-widget {
   border: 1px dashed #ccc;
-  padding: 8px;
+  padding: 6px;
 }
 
-@media (min-width: 600px) {
+/* sticky button for mobile */
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  background: #f5f5f5;
+  padding: 10px 0;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #4CAF50;
+  color: #fff;
+}
+
+/* desktop improvement */
+@media (min-width: 768px) {
+  textarea {
+    max-height: 200px;
+  }
+
+  .action-bar {
+    position: static;
+  }
+
   button {
     width: auto;
+    padding: 10px 18px;
   }
 }
 </style>
@@ -71,10 +101,13 @@ button {
 
   <div class="card">
     <textarea id="text" placeholder="Isi pesan baru..."></textarea>
-    <button onclick="edit()">Edit Pesan</button>
+
+    <div class="action-bar">
+      <button onclick="edit()">Edit Pesan</button>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card preview-wrapper">
     <div id="telegram-widget"></div>
   </div>
 </div>
@@ -83,6 +116,13 @@ button {
 const TOKEN = "8384730708:AAHjPCLYpW7wz2B5-jBxMJ17-kH1G1zXZuY";
 const CHAT_ID = -1001538855794;
 const MESSAGE_ID = 27;
+
+/* auto grow textarea */
+const ta = document.getElementById("text");
+ta.addEventListener("input", () => {
+  ta.style.height = "auto";
+  ta.style.height = ta.scrollHeight + "px";
+});
 
 function loadWidget() {
   const w = document.getElementById("telegram-widget");
@@ -98,21 +138,30 @@ function loadWidget() {
 loadWidget();
 
 async function edit() {
-  const text = document.getElementById("text").value.trim();
+  const text = ta.value.trim();
   if (!text) return;
 
-  const r = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({
-      chat_id: CHAT_ID,
-      message_id: MESSAGE_ID,
-      text
-    })
-  });
+  const btn = event.target;
+  btn.textContent = "Menyimpan...";
+  btn.disabled = true;
 
-  const j = await r.json();
-  if (j.ok) loadWidget();
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        message_id: MESSAGE_ID,
+        text
+      })
+    });
+
+    const j = await r.json();
+    if (j.ok) loadWidget();
+  } finally {
+    btn.textContent = "Edit Pesan";
+    btn.disabled = false;
+  }
 }
 </script>
 
