@@ -2,100 +2,54 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Edit & View Telegram Post</title>
+<title>Edit Telegram Post</title>
 
 <style>
-:root {
-  --primary: #4CAF50;
-  --primary-dark: #43a047;
-  --bg: #f4f6f8;
-  --card: #ffffff;
-  --text: #333;
-  --border: #e0e0e0;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 body {
-  margin: 0;
-  padding: 30px;
   font-family: system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: #f5f5f5;
+  padding: 20px;
 }
 
 .container {
-  max-width: 900px;
+  max-width: 700px;
   margin: auto;
 }
 
 h2 {
   text-align: center;
-  margin-bottom: 30px;
 }
 
 .card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 25px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-}
-
-label {
-  font-weight: 600;
-  display: block;
-  margin-bottom: 8px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
 }
 
 textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 12px;
-  font-size: 1em;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  resize: vertical;
-}
-
-textarea:focus {
-  border-color: var(--primary);
-  outline: none;
-}
-
-.actions {
-  margin-top: 15px;
+  min-height: 100px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
 }
 
 button {
-  padding: 12px 22px;
-  font-size: 0.95em;
-  font-weight: 600;
-  border-radius: 8px;
+  margin-top: 10px;
+  padding: 8px 14px;
   border: none;
+  border-radius: 4px;
+  background: #4CAF50;
+  color: #fff;
   cursor: pointer;
-  background: var(--primary);
-  color: white;
-  transition: 0.2s ease;
-}
-
-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-}
-
-.preview-title {
-  font-weight: 600;
-  margin-bottom: 10px;
 }
 
 #telegram-widget {
-  border: 1px dashed var(--border);
-  border-radius: 8px;
-  padding: 10px;
-  background: #fafafa;
+  border: 1px dashed #ccc;
+  padding: 8px;
 }
 </style>
 </head>
@@ -103,19 +57,14 @@ button:hover {
 <body>
 
 <div class="container">
-  <h2>✏️ Edit & Preview Telegram Post</h2>
+  <h2>Edit & Preview</h2>
 
   <div class="card">
-    <label for="text">Isi pesan baru</label>
-    <textarea id="text" placeholder="Tulis pesan channel di sini..."></textarea>
-
-    <div class="actions">
-      <button onclick="edit()">💾 Edit Pesan</button>
-    </div>
+    <textarea id="text" placeholder="Isi pesan baru..."></textarea>
+    <button onclick="edit()">Edit Pesan</button>
   </div>
 
   <div class="card">
-    <div class="preview-title">👀 Preview Pesan (ID 27)</div>
     <div id="telegram-widget"></div>
   </div>
 </div>
@@ -126,47 +75,33 @@ const CHAT_ID = -1001538855794;
 const MESSAGE_ID = 27;
 
 function loadWidget() {
-  const container = document.getElementById("telegram-widget");
-  container.innerHTML = "";
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = "https://telegram.org/js/telegram-widget.js?22";
-  script.setAttribute("data-telegram-post", "promoteauto/27");
-  script.setAttribute("data-width", "100%");
-  container.appendChild(script);
+  const w = document.getElementById("telegram-widget");
+  w.innerHTML = "";
+  const s = document.createElement("script");
+  s.src = "https://telegram.org/js/telegram-widget.js?22";
+  s.async = true;
+  s.setAttribute("data-telegram-post", "promoteauto/27");
+  w.appendChild(s);
 }
 
 loadWidget();
 
 async function edit() {
   const text = document.getElementById("text").value.trim();
-  if (!text) return alert("❌ Pesan tidak boleh kosong");
+  if (!text) return;
 
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: CHAT_ID,
-        message_id: MESSAGE_ID,
-        text: text,
-        disable_web_page_preview: true
-      })
-    });
+  const r = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      message_id: MESSAGE_ID,
+      text
+    })
+  });
 
-    const json = await res.json();
-
-    if (!json.ok) {
-      alert("❌ Gagal edit pesan");
-      return;
-    }
-
-    // reload widget biar update
-    setTimeout(loadWidget, 1000);
-
-  } catch (e) {
-    alert("❌ Error: " + e.message);
-  }
+  const j = await r.json();
+  if (j.ok) loadWidget();
 }
 </script>
 
