@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Edit & View Telegram Post</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    padding: 20px;
+    background: #fafafa;
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 6px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+  }
+  #log {
+    margin-top: 20px;
+    white-space: pre-wrap;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow: auto;
+  }
+  #widget-container {
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Edit & View Telegram Post</h2>
+
+<!-- Textarea untuk edit pesan -->
+<textarea id="text" rows="4" placeholder="Isi pesan baru channel"></textarea>
+<button onclick="edit()">Edit Pesan</button>
+
+<pre id="log"></pre>
+
+<!-- Container widget -->
+<div id="widget-container">
+  <h3>Preview Pesan (ID 27)</h3>
+  <div id="telegram-widget">
+    <!-- Widget Telegram akan muncul di sini -->
+  </div>
+</div>
+
+<script>
+const TOKEN = "8384730708:AAHjPCLYpW7wz2B5-jBxMJ17-kH1G1zXZuY";
+const CHAT_ID = -1001538855794;
+const MESSAGE_ID = 27;
+
+// Fungsi untuk inject widget Telegram
+function loadWidget() {
+  const container = document.getElementById("telegram-widget");
+  container.innerHTML = ""; // kosongkan dulu
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = "https://telegram.org/js/telegram-widget.js?22";
+  script.setAttribute("data-telegram-post", "promoteauto/27");
+  script.setAttribute("data-width", "100%");
+  container.appendChild(script);
+}
+
+// Panggil widget pertama kali (tampilkan sebelum edit)
+loadWidget();
+
+// Fungsi edit pesan
+async function edit() {
+  const text = document.getElementById("text").value;
+  if (!text) return alert("Text kosong");
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TOKEN}/editMessageText`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        message_id: MESSAGE_ID,
+        text: text,
+        disable_web_page_preview: true
+      })
+    });
+
+    const json = await res.json();
+    document.getElementById("log").textContent = JSON.stringify(json, null, 2);
+
+    if (json.ok) {
+      // reload widget supaya tampil update terbaru
+      setTimeout(loadWidget, 1000); // delay 1 detik biar server Telegram update dulu
+    }
+
+  } catch (e) {
+    document.getElementById("log").textContent = "❌ Error: " + e.message;
+  }
+}
+</script>
+
+</body>
+</html>
