@@ -6,30 +6,232 @@
 <title>Pojok Literasi SMP</title>
 <style>
 :root{
-    --primary:#1565c0;
-    --dark:#0d47a1;
-    --bg:#f4f6f8;
+  --primary:#1e88e5;
+  --secondary:#2e7d32;
+  --dark:#0d47a1;
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --border:#e0e0e0;
+  --text:#263238;
 }
-body{margin:0;font-family:"Segoe UI", Arial, sans-serif;background:var(--bg);}
-header{background:var(--primary);color:white;padding:16px;text-align:center;}
-header h1{margin:0;font-size:20px;}
-.main-menu{display:flex;background:var(--dark);}
-.main-menu button{flex:1;padding:12px;border:none;background:none;color:white;font-weight:600;cursor:pointer;}
-.main-menu button:hover,.main-menu button.active{background:var(--primary);}
-.container{display:flex;height:calc(100vh - 120px);}
-.viewer{flex:1;padding:10px;}
-.viewer-header{background:white;padding:10px;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,.1);}
-.viewer-body{height:calc(100% - 50px);background:white;border-radius:0 0 8px 8px;box-shadow:0 4px 12px rgba(0,0,0,.15);overflow:hidden;}
-.viewer-body iframe{width:100%;height:100%;border:none;}
-.item{display:flex;justify-content:space-between;align-items:center;padding:8px;margin:6px 0;background:#fafafa;border:1px solid #ddd;border-radius:6px;}
-.item button{background:var(--primary);color:white;border:none;padding:4px 8px;border-radius:4px;font-size:12px;cursor:pointer;}
-.breadcrumb{font-size:13px;color:#555;margin-bottom:6px;}
-.breadcrumb span{color:#1565c0;cursor:pointer;}
-.breadcrumb span:hover{text-decoration:underline;}
-#pdfView{display:none;position:fixed;top:72px;left:0;width:100%;height:calc(100% - 72px);background:#fff;z-index:9999;}
-#pdfView .viewer-header{display:flex;justify-content:space-between;padding:10px;background:#eee;}
-#pdfView .viewer-body{height:calc(100% - 50px);}
-#pdfViewer{width:100%;height:100%;border:none;}
+
+/* RESET */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:"Segoe UI", Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.15);
+}
+header h1{
+  margin:0;
+  font-size:22px;
+  letter-spacing:.5px;
+}
+header h1::after{
+  content:"\A Perpustakaan Digital & Pojok Literasi Sekolah";
+  white-space:pre;
+  display:block;
+  font-size:13px;
+  opacity:.85;
+  margin-top:6px;
+}
+
+/* MENU */
+.main-menu{
+  display:flex;
+  background:var(--dark);
+}
+.main-menu button{
+  flex:1;
+  padding:14px 10px;
+  border:none;
+  background:none;
+  color:white;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:.25s;
+}
+.main-menu button:hover{
+  background:rgba(255,255,255,.12);
+}
+.main-menu button.active{
+  background:var(--primary);
+  border-bottom:4px solid #ffeb3b;
+}
+
+/* LAYOUT */
+.container{
+  display:flex;
+  height:calc(100vh - 128px);
+}
+.viewer{
+  flex:1;
+  padding:16px;
+  overflow:auto;
+}
+
+/* BERANDA */
+#homeView{
+  background:var(--card);
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 8px 22px rgba(0,0,0,.12);
+}
+#homeView h3{
+  margin-top:0;
+}
+#homeView p{
+  line-height:1.6;
+}
+
+/* DROPDOWN PANEL */
+#dropdownPanel{
+  background:var(--card);
+  padding:18px;
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);
+}
+
+/* SELECT */
+select{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  margin:10px 0 16px;
+  font-size:14px;
+}
+
+/* BREADCRUMB */
+.breadcrumb{
+  background:#e3f2fd;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
+  margin-bottom:12px;
+}
+.breadcrumb span{
+  color:var(--primary);
+  cursor:pointer;
+  font-weight:600;
+}
+.breadcrumb span:hover{
+  text-decoration:underline;
+}
+
+/* DAFTAR BUKU */
+#daftarMapel{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;
+}
+
+/* KARTU BUKU */
+.item{
+  background:#fafafa;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:.25s;
+}
+.item:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+.item span{
+  font-weight:600;
+  margin-bottom:10px;
+}
+.item span::before{
+  content:"📘 ";
+}
+
+/* BUTTON */
+.item button{
+  align-self:flex-end;
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+  cursor:pointer;
+  transition:.25s;
+}
+.item button:hover{
+  background:var(--secondary);
+}
+.item button:disabled{
+  background:#bdbdbd;
+  cursor:not-allowed;
+}
+
+/* PDF VIEW */
+#pdfView{
+  display:none;
+  position:fixed;
+  top:72px;
+  left:0;
+  width:100%;
+  height:calc(100% - 72px);
+  background:#fdfdfd;
+  z-index:9999;
+}
+
+/* PDF HEADER */
+#pdfView .viewer-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  background:#f1f1f1;
+  font-weight:600;
+  border-bottom:1px solid var(--border);
+}
+#pdfView .viewer-header button{
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  margin-left:6px;
+  cursor:pointer;
+}
+
+/* PDF BODY */
+#pdfView .viewer-body{
+  height:calc(100% - 56px);
+}
+#pdfViewer{
+  width:100%;
+  height:100%;
+  border:none;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .container{
+    height:auto;
+  }
+  #daftarMapel{
+    grid-template-columns:1fr;
+  }
+}
+
 </style>
 </head>
 <body>
